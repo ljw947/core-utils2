@@ -6,32 +6,43 @@
 
 bool FORCE = false;
 bool INTERACTIVE = false;
+bool VERBOSE = true;
 
 int processArgs(int argc, char* argv[])
 {
     // keep track of where relevant args start from
     // to ignore cases like "arg1 --flag arg2" which are unhandled (for now)
-    int relevantArgs = 1;
+    int relevantArgsIndex = 1;
 
     // skip program name
     for (int i = 1; i < argc; ++i)
     {
-        if (strcmp(argv[i], "-f"))
+        if (strcmp(argv[i], "--force") == 0 || strcmp(argv[i], "-f") == 0)
         {
             FORCE = true;
-            ++relevantArgs;
+            relevantArgsIndex = i + 1;
             break;
         }
 
-        if (strcmp(argv[i], "--force"))
+        if (strcmp(argv[i], "-v") == 0 || strcmp(argv[i], "--verbose") == 0)
         {
-            FORCE = true;
-            ++relevantArgs;
+            VERBOSE = true;
+            relevantArgsIndex = i + 1;
+            break;
+        }
+
+        if (strcmp(argv[i], "-i") == 0)
+        {
+            INTERACTIVE = true;
+            relevantArgsIndex = i + 1;
             break;
         }
     }
 
-    return relevantArgs;
+    if (VERBOSE)
+        printf("Num args: %d\nRelevant args index: %d\n", argc, relevantArgsIndex);
+
+    return relevantArgsIndex;
 }
 
 int main(int argc, char* argv[])
@@ -47,8 +58,16 @@ int main(int argc, char* argv[])
     // don't remove rm itself
     for (int i = relevantArgs; i < argc; ++i)
     {
+        if (VERBOSE)
+            printf("Attempting removal: %s\n", argv[i]);
+
         int ret = unlink(argv[i]);
-        if (ret != 0 && FORCE)
+
+        if (FORCE)
+        {
+            break;
+        }
+        else if (ret != 0)
         {
             printf("%s: cannot remove '%s': %s\n", argv[0], argv[i], strerror(errno));
             return ret;

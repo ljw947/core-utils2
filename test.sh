@@ -2,7 +2,7 @@
 
 set -ex
 
-make all
+make debug
 
 pushd build
 
@@ -49,5 +49,7 @@ if [[ -f test2 ]]; then
 fi
 
 popd
+
+rm -rf build
 
 exit 0
