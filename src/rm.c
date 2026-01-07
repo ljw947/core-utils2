@@ -6,7 +6,7 @@
 
 bool FORCE = false;
 bool INTERACTIVE = false;
-bool VERBOSE = true;
+bool VERBOSE = false;
 
 int processArgs(int argc, char* argv[])
 {

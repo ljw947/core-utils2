@@ -7,3 +7,7 @@ debug:
 	rm -rf build
 	mkdir build
 	gcc -g src/rm.c -o build/rm
+
+.PHONY: test
+test:
+	bash ./test/test-runner.sh || exit 1
